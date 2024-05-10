@@ -35,7 +35,7 @@ export class UserRepo {
 		const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [
 			id,
 		]);
-		return toCamelCase(rows);
+		return toCamelCase(rows)[0];
 	}
 
 	static async findByIdAndUpdate(id: string, username: string, email: string) {
