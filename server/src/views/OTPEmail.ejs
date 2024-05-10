@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>OTP Email</title>
+	</head>
+	<style>
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.container {
+			border: 3px solid #e5e4e4;
+			border-radius: 30px;
+			width: 500px;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+		}
+
+		h1 {
+			font-size: large;
+			font-weight: 800;
+			margin: 0;
+			padding: 0;
+		}
+
+		.box {
+			width: 400px;
+			display: flex;
+			flex-direction: column;
+			margin: 20px 0;
+		}
+	</style>
+	<body>
+		<div class="container">
+			<h1>Welcome</h1>
+			<div class="box">
+				<p>Hello <%= firstName %></p>
+				<p>This is your OTP</p>
+				<h1><%= otp %></h1>
+			</div>
+		</div>
+	</body>
+</html>
