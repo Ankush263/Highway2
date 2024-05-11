@@ -12,16 +12,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<Router>
 			<Switch>
-				<Route path={'/auth'}>
+				<Route path={'/auth/#'}>
 					<App />
 				</Route>
-				<Route path={'/varify/:url'}>
+				<Route path={'/varify/:url/#'}>
 					<Varify />
 				</Route>
-				<Route path={'/:id'}>
+				<Route path={'/:id/#'}>
 					<NotePage />
 				</Route>
-				<Route path={'/'}>
+				<Route path={'/#'}>
 					<NotesListingPage />
 				</Route>
 			</Switch>
