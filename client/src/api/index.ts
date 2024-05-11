@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const URL = 'http://localhost:8000';
+// const URL = 'http://localhost:8000';
+const URL = 'https://highway2.onrender.com';
 
 const AUTH_URL = `${URL}/api/v1/auth`;
 const NOTE_URL = `${URL}/api/v1/note`;
