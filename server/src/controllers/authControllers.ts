@@ -17,7 +17,7 @@ const signToken = (id: string) => {
 };
 
 const createAndSendToken = (user: any, statusCode: number, res: Response) => {
-	const token = signToken(user[0].id);
+	const token = signToken(user.id);
 
 	const cookieOptions: {
 		expires: Date;
@@ -135,6 +135,49 @@ export const protect = catchAsync(
 		req.user = freshUser;
 
 		next();
+	}
+);
+
+export const getVarificationToken = catchAsync(
+	async (req: Request | any, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+			expiresIn: process.env.JWT_EXPIRES_IN,
+		});
+
+		res.status(200).json({
+			status: 'success',
+			data: token,
+		});
+	}
+);
+
+export const varifyToken = catchAsync(
+	async (req: Request | any, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		const token = req.params.token;
+
+		const decoded: any = jwt.decode(token);
+
+		if (decoded.id === id) {
+			await pool.query(
+				`
+				UPDATE users
+				SET active = true, updated_at = CURRENT_TIMESTAMP
+				WHERE id = $1
+				RETURNING *;
+				`,
+				[req.user.id]
+			);
+			res.status(200).json({
+				status: 'success',
+				data: 'success',
+			});
+		} else {
+			return next(new AppError('Varification failed', 404));
+		}
 	}
 );
 
