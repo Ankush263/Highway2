@@ -3,28 +3,28 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, HashRouter } from 'react-router-dom';
 import NotesListingPage from './pages/NotesListingPage.tsx';
 import NotePage from './pages/NotePage.tsx';
 import Varify from './pages/Varify.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<Router>
+		<HashRouter>
 			<Switch>
-				<Route path={'/auth/#'}>
+				<Route path={'/auth'}>
 					<App />
 				</Route>
-				<Route path={'/varify/:url/#'}>
+				<Route path={'/varify/:url'}>
 					<Varify />
 				</Route>
-				<Route path={'/:id/#'}>
+				<Route path={'/:id'}>
 					<NotePage />
 				</Route>
-				<Route path={'/#'}>
+				<Route path={'/'}>
 					<NotesListingPage />
 				</Route>
 			</Switch>
-		</Router>
+		</HashRouter>
 	</React.StrictMode>
 );
