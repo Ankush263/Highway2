@@ -17,7 +17,7 @@ const signToken = (id: string) => {
 };
 
 const createAndSendToken = (user: any, statusCode: number, res: Response) => {
-	const token = signToken(user.id);
+	const token = signToken(user[0].id);
 
 	const cookieOptions: {
 		expires: Date;
@@ -77,7 +77,7 @@ export const signup = catchAsync(
 			false
 		);
 
-		createAndSendToken(newUser, 201, res);
+		createAndSendToken([newUser], 201, res);
 	}
 );
 
@@ -91,7 +91,7 @@ export const login = catchAsync(
 
 		const user: any = await UserRepo.findByEmail(email);
 
-		if (!user || !bcrypt.compareSync(password, user[0].password)) {
+		if (!user[0] || !bcrypt.compareSync(password, user[0].password)) {
 			return next(new AppError(`Incorrect email or password`, 401));
 		}
 
@@ -119,9 +119,7 @@ export const protect = catchAsync(
 
 		const decoded: any = jwt.decode(token);
 
-		let freshUser: any;
-
-		freshUser = await UserRepo.findById(decoded.id);
+		const freshUser = await UserRepo.findById(decoded.id);
 
 		if (!freshUser) {
 			return next(
@@ -217,6 +215,17 @@ export const matchOTP = catchAsync(
 		res.status(200).json({
 			status: 'success',
 			data: updatedUser,
+		});
+	}
+);
+
+export const getMe = catchAsync(
+	async (req: Request | any, res: Response, next: NextFunction) => {
+		const me = await UserRepo.findById(req.user.id);
+
+		res.status(200).json({
+			status: 'success',
+			data: me,
 		});
 	}
 );

@@ -7,12 +7,15 @@ import {
 	matchOTP,
 	getVarificationToken,
 	varifyToken,
+	getMe,
 } from '../controllers/authControllers';
 
 export const router = Router();
 
 router.route('/signup').post(signup);
 router.route('/login').post(login);
+
+router.route('/me').get(protect, getMe);
 
 router.route('/getOtp').post(protect, getOtp);
 router.route('/varifyOtp').post(protect, matchOTP);

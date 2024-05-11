@@ -2,7 +2,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { signup } from '../../api';
-import { Alert } from 'react-bootstrap';
+import { Alert, Spinner } from 'react-bootstrap';
 import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
@@ -11,14 +11,17 @@ function Signup({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 	const [alert, setAlert] = useState(false);
 	const [alertTxt, setAlertTxt] = useState('');
 	const [alertType, setAlertType] = useState('danger');
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		try {
+			setLoading(true);
 			const form = event.currentTarget;
 			if (form.checkValidity() === false) {
 				event.preventDefault();
 				event.stopPropagation();
 				setValidated(true);
+				setLoading(false);
 				return;
 			}
 			event.preventDefault();
@@ -36,8 +39,10 @@ function Signup({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 			setAlert(true);
 			setAlertTxt('We have sent you an email varification link.');
 			setAlertType('success');
+			setLoading(false);
 		} catch (error) {
 			console.log(error);
+			setLoading(false);
 			setAlert(true);
 			setAlertType('danger');
 			if (error instanceof AxiosError) {
@@ -96,7 +101,17 @@ function Signup({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 					</Form.Group>
 
 					<Button variant="primary" type="submit" style={{ width: '100%' }}>
-						Sign Up
+						{loading ? (
+							<Spinner
+								as="span"
+								animation="grow"
+								size="sm"
+								role="status"
+								aria-hidden="true"
+							/>
+						) : (
+							'Sign Up'
+						)}
 					</Button>
 					<Form.Group
 						style={{

@@ -2,7 +2,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { login } from '../../api';
-import { Alert } from 'react-bootstrap';
+import { Alert, Spinner } from 'react-bootstrap';
 import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
@@ -11,16 +11,19 @@ function Login({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 	const [validated, setValidated] = useState(false);
 	const [alert, setAlert] = useState(false);
 	const [alertTxt, setAlertTxt] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const history = useHistory();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		try {
+			setLoading(true);
 			const form = event.currentTarget;
 			if (form.checkValidity() === false) {
 				event.preventDefault();
 				event.stopPropagation();
 				setValidated(true);
+				setLoading(false);
 				return;
 			}
 			event.preventDefault();
@@ -35,9 +38,11 @@ function Login({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 
 			const token = response.data.token;
 			Cookies.set('Token', token);
+			setLoading(false);
 			history.replace('/');
 		} catch (error) {
 			console.log(error);
+			setLoading(false);
 			setAlert(true);
 			if (error instanceof AxiosError) {
 				setAlertTxt(error.response?.data.message);
@@ -82,7 +87,17 @@ function Login({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 					</Form.Group>
 
 					<Button variant="primary" type="submit" style={{ width: '100%' }}>
-						Login
+						{loading ? (
+							<Spinner
+								as="span"
+								animation="grow"
+								size="sm"
+								role="status"
+								aria-hidden="true"
+							/>
+						) : (
+							'Login'
+						)}
 					</Button>
 					<Form.Group
 						style={{
@@ -94,7 +109,7 @@ function Login({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 						<Form.Label>
 							Don't have an account
 							<Button variant="link" onClick={() => setLogin(false)}>
-								Signup
+								signup
 							</Button>
 						</Form.Label>
 					</Form.Group>

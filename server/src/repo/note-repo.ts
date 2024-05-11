@@ -31,8 +31,24 @@ export class NoteRepo {
 
 	static async findByUserId(user_id: number) {
 		const { rows } = await pool.query(
-			'SELECT * FROM notes WHERE user_id = $1',
+			'SELECT id, title FROM notes WHERE user_id = $1',
 			[user_id]
+		);
+
+		return toCamelCase(rows);
+	}
+
+	static async findByIdAndUpdate(user_id: number, title: string, text: string) {
+		const { rows } = await pool.query(
+			`
+			UPDATE notes
+			SET 
+				title = COALESCE($2, title),
+				text = COALESCE($3, text)
+			WHERE id = $1
+			RETURNING *;
+			`,
+			[user_id, title, text]
 		);
 
 		return toCamelCase(rows);
