@@ -7,6 +7,7 @@ import { NextFunction, Response, Request } from 'express';
 import bcrypt from 'bcryptjs';
 import { OtpRepo } from '../repo/otp-repo';
 import pool from '../pool';
+import Email from '../utils/email';
 
 dotenv.config();
 
@@ -144,9 +145,17 @@ export const getVarificationToken = catchAsync(
 			expiresIn: process.env.JWT_EXPIRES_IN,
 		});
 
+		const resetURL = `${req.protocol}s://${req.get(
+			'host'
+		)}/api/v1/auth/varifyToken/${token}`;
+
+		const user = await UserRepo.findById(req.user.id);
+
+		await new Email(user, token).sendVarificationLink();
+
 		res.status(200).json({
 			status: 'success',
-			data: token,
+			data: resetURL,
 		});
 	}
 );

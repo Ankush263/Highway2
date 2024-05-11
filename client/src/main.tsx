@@ -6,6 +6,7 @@ import './index.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import NotesListingPage from './pages/NotesListingPage.tsx';
 import NotePage from './pages/NotePage.tsx';
+import Varify from './pages/Varify.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
@@ -13,6 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<Switch>
 				<Route path={'/auth'}>
 					<App />
+				</Route>
+				<Route path={'/varify/:url'}>
+					<Varify />
 				</Route>
 				<Route path={'/:id'}>
 					<NotePage />

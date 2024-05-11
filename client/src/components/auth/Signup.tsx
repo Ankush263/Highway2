@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
-import { signup } from '../../api';
+import { signup, getToken } from '../../api';
 import { Alert, Spinner } from 'react-bootstrap';
 import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
@@ -36,6 +36,7 @@ function Signup({ setLogin }: { setLogin: (prevState: boolean) => void }) {
 
 			const token = response.data.token;
 			Cookies.set('Token', token);
+			await getToken(token);
 			setAlert(true);
 			setAlertTxt('We have sent you an email varification link.');
 			setAlertType('success');

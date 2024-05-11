@@ -20,6 +20,14 @@ export const login = (details: { email: string; password: string }) =>
 export const getMe = (_token: string) =>
 	AUTH_API.get('/me', { headers: { Authorization: `Bearer ${_token}` } });
 
+export const getToken = (_token: string) =>
+	AUTH_API.get('/getToken', { headers: { Authorization: `Bearer ${_token}` } });
+
+export const varifyToken = (_token: string, varificationToken: string) =>
+	AUTH_API.get(`/varifyToken/${varificationToken}`, {
+		headers: { Authorization: `Bearer ${_token}` },
+	});
+
 export const createNote = (
 	_token: string,
 	details: { title: string; text: string }

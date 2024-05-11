@@ -1,28 +1,30 @@
 import nodemailer, { TransportOptions } from 'nodemailer';
 import { convert } from 'html-to-text';
 import ejs from 'ejs';
-import { UserInterface } from 'models/user.model';
 
 export default class Email {
 	to: string;
 	firstName: string;
-	otp: string;
+	url: string;
 	from: any;
 
-	constructor(user: UserInterface, otp: string) {
+	constructor(user: any, url: string) {
 		this.to = user.email;
 		this.firstName = user.firstName;
-		this.otp = otp;
-		this.from = `<${process.env.EMAIL_FROM}>`;
+		this.url = url;
+		this.from = `${process.env.EMAIL_FROM}`;
 	}
 
 	newTransport() {
 		if (process.env.NODE_ENV === 'production') {
 			return nodemailer.createTransport({
-				service: 'SendGrid',
+				service: 'Gmail',
+				host: 'smtp.gmail.com',
+				port: 465,
+				secure: true,
 				auth: {
-					user: process.env.SENDGRID_USERNAME,
-					pass: process.env.SENDGRID_PASSWORD,
+					user: `${process.env.GMAIL_USERNAME}`,
+					pass: `${process.env.GMAIL_PASSWORD}`,
 				},
 			});
 		}
@@ -40,13 +42,13 @@ export default class Email {
 	async send(template: string, subject: string) {
 		const html = await ejs.renderFile(`${__dirname}/../views/${template}.ejs`, {
 			firstName: this.firstName,
-			otp: this.otp,
+			url: this.url,
 			subject,
 		});
 
 		const mailOptions = {
 			from: this.from,
-			to: JSON.stringify(this.to),
+			to: this.to,
 			subject,
 			html,
 			text: convert(html),
@@ -57,5 +59,9 @@ export default class Email {
 
 	async sendOTPEmail() {
 		await this.send('OTPEmail', 'Email Varification');
+	}
+
+	async sendVarificationLink() {
+		await this.send('VarificationEmail', 'Email Varification');
 	}
 }
